@@ -108,8 +108,9 @@ else()
             "-B${JUCE_BINARY_DIR}/tools"
             "-G${CMAKE_GENERATOR}"
             "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
-            "-DCMAKE_BUILD_TYPE=Debug"
+            "-DCMAKE_BUILD_TYPE=Release"                # Release instead of Debug
             "-DJUCE_BUILD_HELPER_TOOLS=ON"
+            "-DCMAKE_CXX_FLAGS=-Wa,-mbig-obj -O3"       # -Wa,-mbig-obj and -O3 to avoid file too large
             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
             ${extra_compiler_flag_arguments}
         WORKING_DIRECTORY "${JUCE_SOURCE_DIR}"
