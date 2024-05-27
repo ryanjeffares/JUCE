@@ -69,7 +69,7 @@ namespace Android
 //==============================================================================
 struct AndroidMessageQueue final : private Android::Runnable
 {
-    JUCE_DECLARE_SINGLETON_SINGLETHREADED (AndroidMessageQueue, true)
+    JUCE_DECLARE_SINGLETON_SINGLETHREADED (AndroidMessageQueue, false)  // RYAN: false needed for doNotRecreateAfterDeletion so that we can call shutdownJUCE_GUI and then initialiseJUCE_GUI multiple times
 
     AndroidMessageQueue()
         : self (CreateJavaInterface (this, "java/lang/Runnable"))
