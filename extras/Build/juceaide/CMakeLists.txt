@@ -102,21 +102,37 @@ else()
         set(ENV{CMAKE_GENERATOR_PLATFORM} "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
 
-    # Looks like we're bootstrapping, reinvoke CMake
-    execute_process(COMMAND "${CMAKE_COMMAND}"
-            "."
-            "-B${JUCE_BINARY_DIR}/tools"
-            "-G${CMAKE_GENERATOR}"
-            "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
-            "-DCMAKE_BUILD_TYPE=Release"                # RYAN: Release instead of Debug
-            "-DJUCE_BUILD_HELPER_TOOLS=ON"
-            "-DCMAKE_CXX_FLAGS=-Wa,-mbig-obj -O3"       # RYAN: -Wa,-mbig-obj and -O3 to avoid file too large
-            "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
-            ${extra_compiler_flag_arguments}
-        WORKING_DIRECTORY "${JUCE_SOURCE_DIR}"
-        OUTPUT_VARIABLE command_output
-        ERROR_VARIABLE command_output
-        RESULT_VARIABLE result_variable)
+    if(KLAMP_PLATFORM MATCHES "iOS")
+        # Looks like we're bootstrapping, reinvoke CMake
+        execute_process(COMMAND "${CMAKE_COMMAND}"
+                "."
+                "-B${JUCE_BINARY_DIR}/tools"
+                "-G${CMAKE_GENERATOR}"
+                "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
+                "-DJUCE_BUILD_HELPER_TOOLS=ON"
+                "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+                ${extra_compiler_flag_arguments}
+            WORKING_DIRECTORY "${JUCE_SOURCE_DIR}"
+            OUTPUT_VARIABLE command_output
+            ERROR_VARIABLE command_output
+            RESULT_VARIABLE result_variable)
+    else()
+        # Looks like we're bootstrapping, reinvoke CMake
+        execute_process(COMMAND "${CMAKE_COMMAND}"
+                "."
+                "-B${JUCE_BINARY_DIR}/tools"
+                "-G${CMAKE_GENERATOR}"
+                "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
+                "-DCMAKE_BUILD_TYPE=Release"                # RYAN: Release instead of Debug
+                "-DJUCE_BUILD_HELPER_TOOLS=ON"
+                "-DCMAKE_CXX_FLAGS=-Wa,-mbig-obj -O3"       # RYAN: -Wa,-mbig-obj and -O3 to avoid file too large
+                "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+                ${extra_compiler_flag_arguments}
+            WORKING_DIRECTORY "${JUCE_SOURCE_DIR}"
+            OUTPUT_VARIABLE command_output
+            ERROR_VARIABLE command_output
+            RESULT_VARIABLE result_variable)
+    endif()
 
     if(result_variable)
         message(FATAL_ERROR "Failed to configure juceaide\n${command_output}")
